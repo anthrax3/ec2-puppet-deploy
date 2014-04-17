@@ -60,6 +60,12 @@ aws_secret_access_key = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 All required settings are stored in the `config.yaml` file. You will also need
 password-less SSH keys installed on jumpboxes and puppetmasters.
 
+When configuring commands to run in `config.yaml` you would run a standard
+command with the line `- run: /path/to/command`. To run a command with sudo you
+would use `sudo` instead on `run`, like `- sudo: /path/to/command`. This
+matches the command names that `fabric` uses. You'll need to make sure your SSH
+user is configured with sudo access for sudo commands to work (obviously).
+
 ## Deploying Puppet Manifests to Puppetmasters
 
 To deploy puppet to an environment run `./deploy <env>` where `<env>` is the
