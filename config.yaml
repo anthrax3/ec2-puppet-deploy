@@ -1,0 +1,11 @@
+ssh_user: admin
+puppet_master_tag_key: role
+puppet_master_tag_value: puppetmaster
+gateway_tag_key: role
+gateway_tag_value: jumpbox
+environment_tag_key: environment
+parallel_deployment: true
+commands:
+  - run: /bin/hostname
+  - sudo: cd /etc/puppet/modules && git pull https://some-git-host/puppet-repo.git
+  - sudo: /sbin/service puppetmaster restart
