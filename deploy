@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # Python standard library modules
+import optparse
 import os
 import socket
 import sys
@@ -10,11 +11,20 @@ import yaml
 import boto.ec2
 from boto.exception import EC2ResponseError
 
-if len(sys.argv) != 2:
-    print 'Usage: %s [prod|preprod]' % sys.argv[0]
-    sys.exit(1)
-else:
-    env = sys.argv[1]
+parser = optparse.OptionParser('usage: %prog -e ENVIRONMENT')
+parser.add_option(
+    '-e',
+    '--environment',
+    dest='environment',
+    type='string',
+    help='specify environment you want to deploy to',
+)
+options, args = parser.parse_args()
+if options.environment is None:
+    parser.print_help()
+    sys.exit(-1)
+
+environment = options.environment
 
 # Try to open and parse the config.yaml file
 try:
@@ -36,7 +46,7 @@ except:
 # Get a list of puppet master addresses for the given environment
 try:
     reservations = conn.get_all_instances(filters={
-        'tag:' + config['environment_tag_key']: env,
+        'tag:' + config['environment_tag_key']: environment,
         'tag:' + config['puppet_master_tag_key']: config['puppet_master_tag_value'],
     })
 except EC2ResponseError as e:
@@ -50,19 +60,19 @@ instances = [i for r in reservations for i in r.instances]
 puppet_masters = [i.private_ip_address for i in instances]
 
 if not puppet_masters:
-    print 'Error: No puppetmasters found for environment "%s".' % env
+    print 'Error: No puppetmasters found for environment "%s".' % environment
     sys.exit(1)
 
 # Get the first (possibly only) gateway for the given environment
 reservations = conn.get_all_instances(filters={
-    'tag:' + config['environment_tag_key']: env,
+    'tag:' + config['environment_tag_key']: environment,
     'tag:' + config['gateway_tag_key']: config['gateway_tag_value'],
 })
 instances = [i for r in reservations for i in r.instances]
 try:
     jumpbox = [i.ip_address for i in instances][0]
 except IndexError:
-    print 'Error: Could not find a jumpbox for environment "%s".' % env
+    print 'Error: Could not find a jumpbox for environment "%s".' % environment
     sys.exit(1)
 
 print 'Gateway: %s' % jumpbox
