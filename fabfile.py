@@ -1,9 +1,9 @@
 # Python standard library modules
 import sys
-import yaml
 
 # 3rd party modules
 from fabric.api import run, sudo
+import yaml
 
 # Try to open and parse the config.yaml file
 try:

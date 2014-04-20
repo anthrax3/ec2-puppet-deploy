@@ -5,11 +5,11 @@ import optparse
 import os
 import socket
 import sys
-import yaml
 
 # 3rd party modules
 import boto.ec2
 from boto.exception import EC2ResponseError
+import yaml
 
 parser = optparse.OptionParser('usage: %prog -e ENVIRONMENT')
 parser.add_option(
