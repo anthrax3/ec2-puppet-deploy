@@ -5,6 +5,7 @@ gateway_tag_key: role
 gateway_tag_value: jumpbox
 environment_tag_key: environment
 parallel_deployment: true
+default_ec2_region: eu-west-1
 commands:
   - run: /bin/hostname
   - sudo: cd /etc/puppet/modules && git pull https://some-git-host/puppet-repo.git

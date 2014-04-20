@@ -19,6 +19,13 @@ parser.add_option(
     type='string',
     help='specify environment you want to deploy to',
 )
+parser.add_option(
+    '-r',
+    '--region',
+    dest='region',
+    type='string',
+    help='specify an EC2 region you want to deploy to',
+)
 options, args = parser.parse_args()
 if options.environment is None:
     parser.print_help()
@@ -36,9 +43,11 @@ except IOError:
     print 'Error: Could not open config.yaml file.'
     sys.exit(1)
 
+region = options.region if options.region else config['default_ec2_region']
+
 # Connect to EC2
 try:
-    conn = boto.ec2.connect_to_region('eu-west-1')
+    conn = boto.ec2.connect_to_region(region)
 except:
     print 'Error: Boto authentication error. Do you have a ~/.boto file?'
     sys.exit(1)

@@ -70,3 +70,7 @@ To deploy puppet to an environment run `./deploy -e ENVIRONMENT`, where
 `ENVIRONMENT` matches the tag you've specified for the environment to deploy
 to. `fabric` will then SSH onto the puppet masters (via the correct jumpbox)
 and run the given deployment commands.
+
+You can also specify the EC2 region to use on the commandline with the option
+`-r REGION` or `--region=REGION`, where `REGION` is the EC2 region you want to
+deploy to (e.g. `eu-west-1`)
