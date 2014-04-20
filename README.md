@@ -1,7 +1,6 @@
 # EC2 Puppet Deploy
 
 ## So What Is It?
-
 This is a Python script that uses `fabric` and `boto` to dynamically deploy
 Puppet manifests to puppet masters in AWS.
 
@@ -67,7 +66,7 @@ matches the command names that `fabric` uses. You'll need to make sure your SSH
 user is configured with sudo access for sudo commands to work (obviously).
 
 ## Deploying Puppet Manifests to Puppetmasters
-
-To deploy puppet to an environment run `./deploy <env>` where `<env>` is the
-environment you want to deploy to. `fabric` will then SSH onto the puppet
-masters (via the correct jumpbox) and run the given deployment commands.
+To deploy puppet to an environment run `./deploy -e ENVIRONMENT`, where
+`ENVIRONMENT` matches the tag you've specified for the environment to deploy
+to. `fabric` will then SSH onto the puppet masters (via the correct jumpbox)
+and run the given deployment commands.
