@@ -26,6 +26,13 @@ parser.add_option(
     type='string',
     help='specify an EC2 region you want to deploy to',
 )
+parser.add_option(
+    '-u',
+    '--user',
+    dest='user',
+    type='string',
+    help='specify the SSH user to run deployment commands as',
+)
 options, args = parser.parse_args()
 if options.environment is None:
     parser.print_help()
@@ -44,6 +51,7 @@ except IOError:
     sys.exit(1)
 
 region = options.region if options.region else config['default_ec2_region']
+ssh_user = options.user if options.user else config['ssh_user']
 
 # Connect to EC2
 try:
@@ -87,7 +95,7 @@ except IndexError:
 print 'Gateway: %s' % jumpbox
 
 os.system('fab --user=%s --hosts=%s --gateway=%s %s deploy' % (
-    config['ssh_user'],
+    ssh_user,
     ','.join(puppet_masters),
     jumpbox,
     '--parallel' if config['parallel_deployment'] else ''
