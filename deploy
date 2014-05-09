@@ -87,16 +87,16 @@ reservations = conn.get_all_instances(filters={
 })
 instances = [i for r in reservations for i in r.instances]
 try:
-    jumpbox = [i.ip_address for i in instances][0]
+    gateway = [i.ip_address for i in instances][0]
 except IndexError:
-    sys.stderr.write('Error: Could not find a jumpbox for environment "%s".' % environment)
+    sys.stderr.write('Error: Could not find a gateway for environment "%s".' % environment)
     sys.exit(1)
 
-print 'Gateway: %s' % jumpbox
+print 'Gateway: %s' % gateway
 
 os.system('fab --user=%s --hosts=%s --gateway=%s %s deploy' % (
     ssh_user,
     ','.join(puppet_masters),
-    jumpbox,
+    gateway,
     '--parallel' if config['parallel_deployment'] else ''
 ))
