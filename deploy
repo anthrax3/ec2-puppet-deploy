@@ -44,10 +44,10 @@ environment = options.environment
 try:
     config = yaml.load(open('config.yaml', 'r'))
 except yaml.scanner.ScannerError:
-    print 'Error: Could not parse config.yaml file.'
+    sys.stderr.write('Error: Could not parse config.yaml file.')
     sys.exit(1)
 except IOError:
-    print 'Error: Could not open config.yaml file.'
+    sys.stderr.write('Error: Could not open config.yaml file.')
     sys.exit(1)
 
 region = options.region if options.region else config['default_ec2_region']
@@ -57,7 +57,7 @@ ssh_user = options.user if options.user else config['ssh_user']
 try:
     conn = boto.ec2.connect_to_region(region)
 except:
-    print 'Error: Boto authentication error. Do you have a ~/.boto file?'
+    sys.stderr.write('Error: Boto authentication error. Do you have a ~/.boto file?\n')
     sys.exit(1)
 
 # Get a list of puppet master addresses for the given environment
@@ -67,17 +67,17 @@ try:
         'tag:' + config['puppet_master_tag_key']: config['puppet_master_tag_value'],
     })
 except EC2ResponseError as e:
-    print 'EC2 Error: ' + e.message
+    sys.stderr.write('EC2 Error: ' + e.message)
     sys.exit(1)
 except socket.gaierror:
-    print 'Error: General socket connection failure.'
+    sys.stderr.write('Error: General socket connection failure.')
     sys.exit(1)
 
 instances = [i for r in reservations for i in r.instances]
 puppet_masters = [i.private_ip_address for i in instances]
 
 if not puppet_masters:
-    print 'Error: No puppetmasters found for environment "%s".' % environment
+    sys.stderr.write('Error: No puppetmasters found for environment "%s".' % environment)
     sys.exit(1)
 
 # Get the first (possibly only) gateway for the given environment
@@ -89,7 +89,7 @@ instances = [i for r in reservations for i in r.instances]
 try:
     jumpbox = [i.ip_address for i in instances][0]
 except IndexError:
-    print 'Error: Could not find a jumpbox for environment "%s".' % environment
+    sys.stderr.write('Error: Could not find a jumpbox for environment "%s".' % environment)
     sys.exit(1)
 
 print 'Gateway: %s' % jumpbox
