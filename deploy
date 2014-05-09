@@ -24,14 +24,14 @@ parser.add_option(
     '--region',
     dest='region',
     type='string',
-    help='specify an EC2 region you want to deploy to',
+    help='specify an EC2 region you want to deploy to (optional)',
 )
 parser.add_option(
     '-u',
     '--user',
     dest='user',
     type='string',
-    help='specify the SSH user to run deployment commands as',
+    help='specify the SSH user to run deployment commands as (optional)',
 )
 options, args = parser.parse_args()
 if options.environment is None:
