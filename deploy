@@ -44,10 +44,10 @@ environment = options.environment
 try:
     config = yaml.load(open('config.yaml', 'r'))
 except yaml.scanner.ScannerError:
-    sys.stderr.write('Error: Could not parse config.yaml file.')
+    sys.stderr.write('Error: Could not parse config.yaml file.\n')
     sys.exit(1)
 except IOError:
-    sys.stderr.write('Error: Could not open config.yaml file.')
+    sys.stderr.write('Error: Could not open config.yaml file.\n')
     sys.exit(1)
 
 region = options.region if options.region else config['default_ec2_region']
@@ -70,14 +70,14 @@ except EC2ResponseError as e:
     sys.stderr.write('EC2 Error: ' + e.message)
     sys.exit(1)
 except socket.gaierror:
-    sys.stderr.write('Error: General socket connection failure.')
+    sys.stderr.write('Error: General socket connection failure.\n')
     sys.exit(1)
 
 instances = [i for r in reservations for i in r.instances]
 puppet_masters = [i.private_ip_address for i in instances]
 
 if not puppet_masters:
-    sys.stderr.write('Error: No puppetmasters found for environment "%s".' % environment)
+    sys.stderr.write('Error: No puppetmasters found for environment "%s".\n' % environment)
     sys.exit(1)
 
 # Get the first (possibly only) gateway for the given environment
@@ -89,7 +89,7 @@ instances = [i for r in reservations for i in r.instances]
 try:
     gateway = [i.ip_address for i in instances][0]
 except IndexError:
-    sys.stderr.write('Error: Could not find a gateway for environment "%s".' % environment)
+    sys.stderr.write('Error: Could not find a gateway for environment "%s".\n' % environment)
     sys.exit(1)
 
 print 'Gateway: %s' % gateway
