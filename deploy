@@ -50,8 +50,16 @@ except IOError:
     sys.stderr.write('Error: Could not open config.yaml file.\n')
     sys.exit(1)
 
-region = options.region if options.region else config['default_ec2_region']
-ssh_user = options.user if options.user else config['ssh_user']
+try:
+    region = options.region if options.region else config['default_ec2_region']
+except KeyError:
+    sys.stderr.write('Error: Value for "default_ec2_region" not found in config file\n')
+
+try:
+    ssh_user = options.user if options.user else config['ssh_user']
+except KeyError:
+    sys.stderr.write('Error: Value for "ssh_user" not found in config file\n')
+
 
 # Connect to EC2
 try:
